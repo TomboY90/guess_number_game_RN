@@ -15,6 +15,8 @@ import Colors from '../../constants/colors';
 
 const StartGameScreen = (props) => {
   const [value, setValue] = useState('');
+  const [confirmed, setConfirmed] = useState(false);
+  const [selectedNumber, setSelectedNumber] = useState();
 
   const handleInput = (val) => {
     setValue(val.replace(/[^0-9]/g, '')); // 숫자가 아닌 것들을 '' 빈 스트링으로 변환하겠다
@@ -22,7 +24,26 @@ const StartGameScreen = (props) => {
 
   const resetButtonHandler = () => {
     setValue('');
+    setConfirmed(false);
   };
+
+  const confirmInputHandler = () => {
+    const parsedNumber = parseInt(value);
+
+    if (parsedNumber === NaN || parsedNumber <= 0 || parsedNumber > 99) {
+      return;
+    }
+
+    setConfirmed(true);
+    setSelectedNumber(parsedNumber);
+    setValue('');
+  };
+
+  let confirmedOutput;
+
+  if (confirmed) {
+    confirmedOutput = <Text>Chosen Number: {selectedNumber}</Text>;
+  }
 
   return (
     <TouchableWithoutFeedback
@@ -53,12 +74,13 @@ const StartGameScreen = (props) => {
             <View style={styles.button}>
               <Button
                 title="Confirm"
-                onPress={() => {}}
+                onPress={confirmInputHandler}
                 color={Colors.primary}
               />
             </View>
           </View>
         </Card>
+        {confirmedOutput}
       </View>
     </TouchableWithoutFeedback>
   );
